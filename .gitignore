@@ -1,0 +1,7 @@
+.idea/
+/data/
+/static/
+/log/
+.DS_Store
+*.log
+*.tmp

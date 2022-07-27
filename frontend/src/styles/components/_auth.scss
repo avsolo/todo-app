@@ -1,0 +1,27 @@
+#top-login {
+    position: fixed;
+    top: calc(var(--container-padding) / 2);
+    right: var(--container-padding);
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+}
+
+.tab-toggle-block {
+    margin-bottom: 0.5rem;
+    a {
+        &.disabled {}
+
+        &.disabled:hover {
+            text-decoration: underline;
+        }
+
+        &.active {
+            cursor: default;
+            font-weight: 600;
+        }
+
+    }
+}

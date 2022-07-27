@@ -1,0 +1,115 @@
+@mixin btn-disabled {
+    cursor: not-allowed;
+    color: var(--color-light-grey);
+    background-color: var(--color-bg);
+}
+
+form input[type="submit"] {
+    color: var(--color-bg);
+    background-color: var(--color-link-active);
+
+    &:hover {
+        background-color: var(--color-link-hover);
+    }
+}
+
+::placeholder {
+    color: var(--color-light-grey);
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    text-align: left;
+    color: var(--color-light-grey);
+
+    &::after {
+        content: ':';
+    }
+}
+
+input[type="text"],
+input[type="password"],
+input[type="submit"],
+input[type="button"],
+button,
+.btn {
+    border: var(--input-border-normal);
+    border-radius: var(--input-round);
+    font-size: 1rem;
+    padding: var(--input-padding);
+    margin: var(--input-margin-v);
+}
+
+input[type="submit"],
+input[type="button"],
+button,
+.btn {
+    background-color: var(--color-bg);
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+}
+
+input[type="submit"]:hover,
+input[type="button"]:hover,
+button:hover,
+.btn:hover {
+    background-color: var(--color-link-active);
+    color: var(--color-bg);
+}
+
+input[type="checkbox"] {
+    color: #ccc;
+    filter: grayscale(1) brightness(1.8);
+
+    &:disabled {
+        filter: none;
+    }
+}
+
+input[type="submit"]:disabled,
+input[type="button"]:disabled,
+button:disabled,
+.btn:disabled {
+    @include btn-disabled;
+    &:hover { @include btn-disabled; }
+}
+
+.red {
+    &.btn {
+        color: var(--color-bg);
+        background-color: var(--color-mid-red);
+        &:hover {
+            background-color: var(--color-mid-red-hover);
+        }
+    }
+}
+
+input.fail,
+button.fail {
+    border: var(--input-border-fail);
+}
+
+.note {
+    color: var(--color-light-grey);
+    margin: 0.5rem 0;
+    font-style: italic;
+
+    &.small {
+        font-size: 0.8rem;
+        line-height: 1rem;
+    }
+
+    &.error {
+        color: var(--color-mid-red);
+    }
+
+    &.success {
+        color: var(--color-mid-green);
+    }
+
+    &.info {
+        color: var(--color-link-active);
+    }
+}

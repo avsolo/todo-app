@@ -1,0 +1,32 @@
+.big {
+    font-size: 1.2rem !important;
+}
+
+.small {
+    font-size: 0.8rem !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.mid-gray {
+    color: var(--color-mid-grey) !important;
+}
+
+.primary {
+    background-color: var(--color-link-active) !important;
+    color: var(--color-bg) !important;
+
+    &:hover {
+        background-color: var(--color-link-hover) !important;
+    }
+}
+
+.fail {
+    color: var(--color-mid-red);
+}
+
+.success {
+    color: var(--color-mid-green);
+}

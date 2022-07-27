@@ -1,0 +1,16 @@
+#task-edit .row-flex {
+    //display: flex;
+    //flex-wrap: wrap;
+    //margin: 0 auto;
+
+    label, input[type="text"] {
+        //flex: 1 1 40%;
+        //margin: 0.5em 0;
+        width: auto;
+    }
+
+    label {
+        //text-align: right;
+        //margin-right: 1em;
+    }
+}

@@ -1,0 +1,66 @@
+
+div.row {
+    display: block;
+    position: relative;
+
+
+
+    &::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    &-flex {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0 0.5rem;
+    }
+}
+
+input.row {
+    display: block;
+    width: 100%;
+}
+
+.center-col {
+    text-align: center;
+    margin: 0 1rem;
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+    .center-col {
+        margin: 0 3rem;
+    }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+    .center-col {
+        margin: 0 5rem;
+    }
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+    .center-col {
+        margin: 0 10rem;
+    }
+}
+
+// X-Large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+    .center-col {
+        margin: 0 20rem;
+    }
+}
+
+// XX-Large devices (larger desktops, 1400px and up)
+@media (min-width: 1400px) {
+    .center-col {
+        min-width: 40rem;
+        max-width: 100%;
+    }
+}
