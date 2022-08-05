@@ -40,7 +40,7 @@ const AddForm = () => {
             return;
         }
 
-        api.create({summary: s, isChecked: false})
+        api.create({summary: s})
             .then(r => dispatch({ type: Action.ADD_TASK, data: r.data, meta: r.meta, reload: true }))
             .then(_ => {
                 setCurrentValue("");

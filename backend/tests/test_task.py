@@ -24,23 +24,20 @@ def init(init_ctx):
     )
 ])
 def test_crud_guest(c_req, c_resp):
-    resp = ctx.client.post("/tasks/create", json=c_req)
-    j = resp.get_json()
+    resp = ctx.client.post("/api/tasks/create", json=c_req)
+    j = resp.json()
     assert c_resp == j
     _id = j['data']['id']
 
     for u_req in [{"summary": "new"}, {"name": "bb"}, {"email": "bbb@bb.bb"}, {"isChecked": True}]:
-        resp = ctx.client.put(f"/tasks/update/{_id}", json=u_req)
-        assert ERR_UNAUTHORIZED == resp.get_json()
-
-    resp = ctx.client.delete(f"/tasks/delete/{_id}")
-    assert ERR_UNAUTHORIZED == resp.get_json()
+        resp = ctx.client.put(f"/api/tasks/update/{_id}", json=u_req)
+        assert ERR_UNAUTHORIZED == resp.json()
 
 
 def assert_updated_fields(resp, base, ext):
     exp = deepcopy(base)
     exp.update(ext)
-    assert exp == resp.get_json()
+    assert exp == resp.json()
 
 
 @pytest.mark.parametrize("c_req,c_resp", [
@@ -50,24 +47,22 @@ def assert_updated_fields(resp, base, ext):
     )
 ])
 def test_crud_admin(c_req, c_resp):
-    ctx.client.post("/user/login", json=ADMIN)
-    resp = ctx.client.post("/tasks/create", json=c_req)
-    j = resp.get_json()
+    ctx.client.post("/api/user/login", json=ADMIN)
+    resp = ctx.client.post("/api/tasks/create", json=c_req)
+    j = resp.json()
     assert c_resp == j
     _id = j['data']['id']
 
     exp_resp = deepcopy(j['data'])
     for u_req in [{"name": "bb"}, {"email": "bbb@bb.bb"}, {"isChecked": True}]:
-        resp = ctx.client.put(f"/tasks/update/{_id}", json=u_req)
+        resp = ctx.client.put(f"/api/tasks/update/{_id}", json=u_req)
         exp_resp.update(u_req)
-        assert exp_resp == resp.get_json()
+        assert exp_resp == resp.json()
 
     new_summary = {"summary": "1abcd"}
-    resp = ctx.client.put(f"/tasks/update/{_id}", json=new_summary)
+    resp = ctx.client.put(f"/api/tasks/update/{_id}", json=new_summary)
     updated_by = {"updatedBy": "admin"}
     exp_resp.update(**new_summary, **updated_by)
-    assert exp_resp == resp.get_json()
+    assert exp_resp == resp.json()
 
-    resp = ctx.client.delete(f"/tasks/delete/{_id}")
-    assert {} == resp.get_json()
 

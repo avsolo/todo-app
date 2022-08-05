@@ -14,7 +14,7 @@ const TaskList = () => {
     const update = useCallback(() => {
         if (updated) return;
         api.filter({
-            sort: `${meta.sort.by}:${meta.sort.asc}`,
+            sort: `${meta.sort.asc ? '' : '-'}${meta.sort.by}`,
             limit: meta.pagination.limit,
             offset: meta.pagination.offset,
         })

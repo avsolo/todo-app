@@ -15,7 +15,19 @@ const AuthForm = () => {
     const [isLoginTab, setLoginTab] = useState(true);
     const [isError, _setError] = useState({});
 
-    const setErrorOrDefault = (e) => _setError(e?.details ?  e.details : {"api": e.message});
+    const setErrorOrDefault = (e) => {
+        console.error("AuthForm.setErrorOrDefault", e);
+        const detail = e?.detail || [];
+        if (detail.length > 0) {
+            let errors = {}
+            for (let d of detail) {
+                errors[d?.loc?.[1]] = d.msg;
+                _setError(errors);
+            }
+        } else {
+            _setError({"api": e.message});
+        }
+    }
 
     useEffect(() => {
         api.getUser()

@@ -2,11 +2,11 @@
 DROP TABLE IF EXISTS tasks;
 CREATE TABLE tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    email TEXT,
+    name TEXT COLLATE NOCASE,
+    email TEXT COLLATE NOCASE,
     isChecked INTEGER,
-    summary TEXT,
-    updatedBy TEXT
+    summary TEXT COLLATE NOCASE,
+    updatedBy TEXT COLLATE NOCASE
 );
 
 CREATE TABLE users (

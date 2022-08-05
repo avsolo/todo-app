@@ -2,11 +2,11 @@ import cfg from "../../config/app.conf";
 
 
 class APIError extends Error {
-    constructor(response) {
-        super(response.message);
+    constructor(message, code, detail) {
+        super(message);
         this.name = "APIError";
-        this.code = response?.code || 500;
-        this.details = response?.details;
+        this.code = code || 500;
+        this.detail = detail;
     }
 }
 
@@ -36,15 +36,18 @@ api.fetch = (path, method, data) => {
     const timeout = setTimeout(() => controller.abort(), cfg.API_TIMEOUT_MS);
 
     return fetch(`${cfg.API_URL}${path}`, makeParams(method, data, controller.signal))
-        .then(r => r.json())
+        .then(r => r.json().then(j => {
+            j._response = r;
+            return j;
+        }))
         .catch(e => {
             console.error("Not a JSON", e);
-            throw new APIError({"message": "Unable to process server response"});
+            throw new APIError("Unable to process server response");
         })
-        .then(j => {
-            if (j?.error)
-                throw new APIError(j.error);
-            return j;
+        .then(json => {
+            if (! (json._response.ok) || json?.detail)
+                throw new APIError(json._response.statusText, json._response.status, json?.detail);
+            return json;
         })
         .finally(() => clearTimeout(timeout));
 }
@@ -52,19 +55,10 @@ api.fetch = (path, method, data) => {
 
 api.create = data => api.fetch(`/tasks/create`, 'POST', data);
 api.update = (id, data) => api.fetch(`/tasks/update/${id}`, 'PUT', data);
-api.delete = id => api.fetch(`/tasks/delete/${id}`, 'DELETE');
-api.filter = params => api.fetch(`/tasks/filter${makeQueryString(params)}`);
-api.filterFromMeta = _meta => {
-    const params = {
-        sort: _meta?.sort?.by || 'id',
-        asc: _meta?.sort?.asc || true,
-        offset: _meta?.pagination?.offset || 0,
-        limit: _meta?.pagination?.limit || 3
-    };
+api.filter = params => {
+    console.debug("api.filter", params);
     return api.fetch(`/tasks/filter${makeQueryString(params)}`);
 }
-api.count = () => api.fetch(`/tasks/count`);
-
 api.getUser = () => api.fetch(`/user/get`);
 api.setUser = data => api.fetch(`/user/set`, 'POST', data);
 api.login = data => api.fetch(`/user/login`, 'POST', data);

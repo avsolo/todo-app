@@ -32,13 +32,21 @@ const EditForm = () => {
     const handleSubmit = (ev) => {
         ev.preventDefault();
         let data = formToDict(ev.target, {parseInt: ['id']});
-        api.update(data.id, data).then(resp => {
+        let id = data['id'];
+        ['id', 'submit'].map(f => delete data[f]);
+        api.update(id, data).then(resp => {
             dispatch({ type: Action.UPDATE_TASK, task: resp})
         }).then(_ => {
             setVisibility(false);
             _setError({});
         }).catch(e => {
-            _setError(e?.details ?  e.details : { ...isError, "api": e.message});
+            if (e?.detail) {
+                let el = {};
+                e.detail.map(d => el[d?.loc?.[1]] = d?.msg);
+                _setError(el);
+            } else {
+                _setError({"api": e.message});
+            }
         });
     }
 
@@ -66,7 +74,7 @@ const EditForm = () => {
                     {["name", "email"].map(f =>
                         <div className="input-group" key={`_${f}`}>
                             <label htmlFor={f} className={isError?.[f] ? "fail" : ""}>
-                                {i18n("summary")}
+                                {i18n(f)}
                                 {isError?.[f] ? <span className="fail">{` ${isError?.[f]}`}</span> : ""}
                             </label>
                             <input type="text" name={f} value={data?.[f] || ''}

@@ -12,8 +12,8 @@ export default async function loginTest() {
         AR.startStep(`- Попробовать залогиниться с пустыми полями. Должна вывестись ошибка, что поля обязательны для заполнения или, что введенные данные не верные.`);
         await AuthBlock.login("", "");
         await AuthBlock.submit();
-        await expect(AuthBlock.labelFor("name")).toHaveText("Name can't be empty");
-        await expect(AuthBlock.labelFor("password")).toHaveText("Password can't be empty");
+        await expect(AuthBlock.labelFor("name")).toHaveText("Name ensure this value has at least 1 characters");
+        await expect(AuthBlock.labelFor("password")).toHaveText("Password ensure this value has at least 3 characters");
         AR.endStep();
 
         AR.startStep(`Ввести в поле для имени пользователя “admin1”, в поле для пароля “321”. Должна вывестись ошибка о неправильных реквизитах доступа. Админский доступ не должен быть предоставлен.`);

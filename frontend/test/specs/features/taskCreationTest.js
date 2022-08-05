@@ -20,7 +20,7 @@ export default async function taskCreationTest() {
         AR.startStep(`Ввести в поле email “test”. Должна вывестись ошибка, что email не валиден.`);
         await AuthBlock.setUser(null, "test");
         await AuthBlock.submit();
-        await expect(AuthBlock.labelFor("email")).toHaveText("E-Mail invalid format");
+        await expect(AuthBlock.labelFor("email")).toHaveText( "E-Mail string does not match regex \"^[a-z0-9_.-]+[@][a-z0-9_.-]+\\.[a-z]{2,8}$\"");
         await PopupBlock.close();
         AR.endStep();
 
