@@ -2,11 +2,13 @@
   "APP_ENV_PFX": "TODO_APP",
   "APP_HOST": "0.0.0.0",
   "APP_PORT": 9000,
+  "API_PREFIX": "/api",
   "CORS": false,
   "DEBUG": false,
   "SECRET_KEY": "@#5?v,gfhf89dx06k>fdgfh78",
   "STATIC_DIR": "../static",
   "DATA_DIR": "../data",
   "LOG_DIR": "../log",
-  "LOG_LEVEL": "INFO"
+  "LOG_LEVEL": "INFO",
+  "TASKLIST_PAGINATION_DEFAULT": 3
 }

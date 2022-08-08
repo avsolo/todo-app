@@ -1,27 +1,25 @@
-import logging
-from os import path, mkdir, environ
-from shutil import rmtree
 import pytest
-from flask import g
+import logging
+from shutil import rmtree
+from os import path, mkdir, environ
+from fastapi.testclient import TestClient
 
 
 environ['TODO_APP_LOCAL_CONFIG'] = ""
+data_dir = path.join(path.dirname(__file__), "..", ".tests_cache")
+for k, v in {
+        "TODO_APP_STATIC_DIR": path.join(path.dirname(__file__), '..', '..', 'static'),
+        "TODO_APP_DATA_DIR": data_dir,
+        "TODO_APP_LOG_DIR": data_dir,
+}.items():
+    environ[k] = v
 from config import cfg
-data_dir = path.join(path.dirname(__file__), "data")
 if path.isdir(data_dir):
     rmtree(data_dir)
 mkdir(data_dir)
-cfg.merge({
-    "DATA_DIR": data_dir,
-    "LOG_DIR": data_dir,
-    "DB_PATH": path.join(data_dir, "test.sqlite3"),
-    "LOG_PATH": path.join(data_dir, "test.log"),
-    "LOG_LEVEL": logging.DEBUG,
-    "DEBUG": True
-})
+cfg.merge({"LOG_LEVEL": logging.DEBUG, "DEBUG": True})
 
 from main import app as main_app
-from lib.Db import Db, get_sqlite3_db
 
 
 class Ctx:
@@ -33,8 +31,10 @@ class Ctx:
 def exec_sql_file(fname):
     abs_path = path.join(cfg.APP_DIR, "scripts", fname)
     with open(abs_path) as f:
-        res = Db.execscript(f.read())
-    return res
+        import sqlite3
+        conn = sqlite3.connect(cfg.DB_PATH)
+        conn.executescript(f.read())
+    conn.close()
 
 
 @pytest.fixture
@@ -42,23 +42,9 @@ def init_ctx():
     rmtree(cfg.DATA_DIR)
     mkdir(cfg.DATA_DIR)
 
-    app = main_app
-    app.config.update({"TESTING": True, "DEBUG": True})
+    Ctx.app = main_app
+    Ctx.client = TestClient(Ctx.app)
 
-    with app.app_context():
-        g.db = get_sqlite3_db(cfg.DB_PATH)
-        exec_sql_file("db_init.sql")  # Prepare db
-
-    #  global Client, App
-    with app.test_client() as test_client:
-        with test_client.session_transaction() as client_session:
-            [client_session.pop(k) for k in ['name', 'email', 'role'] if k in client_session]
-        with app.app_context() as context:
-            # Client = test_client
-            # App = context
-            Ctx.client = test_client
-            Ctx.app = context
-            yield Ctx
-
-    with app.app_context():
-        exec_sql_file("db_clean.sql")  # Clean db
+    exec_sql_file("db_init.sql")
+    yield Ctx
+    exec_sql_file("db_clean.sql")
